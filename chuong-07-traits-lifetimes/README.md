@@ -1,4 +1,4 @@
-# Chương 7: Traits & Lifetimes (ABC/Protocol → Trait)
+# Chương 7: Traits & Lifetimes (ABC/Protocol thành Trait)
 
 ## 7.1 Trait = ABC / Protocol Trong Python
 
@@ -6,62 +6,66 @@
 
 ### 🐍 Python (Abstract Base Class):
 ```python
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod      # Import ABC
 
-class HinhHoc(ABC):
-    @abstractmethod
-    def dien_tich(self) -> float:
+class HinhHoc(ABC):                      # Class trừu tượng (không tạo instance trực tiếp được)
+    @abstractmethod                      # Decorator: bắt buộc class con phải implement
+    def dien_tich(self) -> float:        # Method trừu tượng (chỉ khai báo, không code)
         pass
 
-    def mo_ta(self):  # Method có sẵn (default)
+    def mo_ta(self):                     # Method có sẵn (default) - class con không cần viết lại
         return f"Diện tích: {self.dien_tich():.2f}"
 
-class HinhTron(HinhHoc):
-    def __init__(self, r):
+class HinhTron(HinhHoc):                 # Kế thừa HinhHoc
+    def __init__(self, r):               # Constructor
         self.r = r
 
-    def dien_tich(self):
+    def dien_tich(self):                 # Implement method trừu tượng (bắt buộc!)
         return 3.14159 * self.r ** 2
 
-class HinhVuong(HinhHoc):
+class HinhVuong(HinhHoc):                # Kế thừa HinhHoc
     def __init__(self, a):
         self.a = a
 
-    def dien_tich(self):
+    def dien_tich(self):                 # Implement method trừu tượng
         return self.a ** 2
 ```
 
 ### 🦀 Rust (Trait):
 ```rust
-trait HinhHoc {
-    fn dien_tich(&self) -> f64;      // Bắt buộc implement
+trait HinhHoc {                                  // trait = khai báo "hợp đồng" (giống ABC Python)
+                                                  // Các kiểu implement trait này phải có dien_tich()
+    fn dien_tich(&self) -> f64;                  // Method bắt buộc (chỉ khai báo, có ; ở cuối)
+                                                  // Giống @abstractmethod Python
 
-    fn mo_ta(&self) -> String {      // Default method (có sẵn)
-        format!("Diện tích: {:.2}", self.dien_tich())
+    fn mo_ta(&self) -> String {                  // Default method (có code sẵn, không bắt buộc override)
+                                                  // Giống method thường trong ABC Python
+        format!("Diện tích: {:.2}", self.dien_tich())  // format!() = f"..." Python
     }
 }
 
-struct HinhTron { ban_kinh: f64 }
-struct HinhVuong { canh: f64 }
+struct HinhTron { ban_kinh: f64 }                // Struct chứa data (giống class HinhTron)
+struct HinhVuong { canh: f64 }                   // Struct chứa data
 
-impl HinhHoc for HinhTron {
-    fn dien_tich(&self) -> f64 {
-        3.14159 * self.ban_kinh * self.ban_kinh
+impl HinhHoc for HinhTron {                      // "HinhTron implement trait HinhHoc"
+                                                  // Giống class HinhTron(HinhHoc): trong Python
+    fn dien_tich(&self) -> f64 {                 // Implement method bắt buộc
+        3.14159 * self.ban_kinh * self.ban_kinh  // Công thức diện tích hình tròn
     }
 }
 
-impl HinhHoc for HinhVuong {
-    fn dien_tich(&self) -> f64 {
-        self.canh * self.canh
+impl HinhHoc for HinhVuong {                     // HinhVuong cũng implement HinhHoc
+    fn dien_tich(&self) -> f64 {                 // Implement method bắt buộc
+        self.canh * self.canh                    // Công thức diện tích hình vuông
     }
 }
 
-fn main() {
-    let tron = HinhTron { ban_kinh: 5.0 };
-    let vuong = HinhVuong { canh: 4.0 };
+fn main() {                                       // Hàm chính
+    let tron = HinhTron { ban_kinh: 5.0 };       // Tạo HinhTron (giống HinhTron(5.0) Python)
+    let vuong = HinhVuong { canh: 4.0 };         // Tạo HinhVuong
 
-    println!("{}", tron.mo_ta());   // "Diện tích: 78.54"
-    println!("{}", vuong.mo_ta());  // "Diện tích: 16.00"
+    println!("{}", tron.mo_ta());                 // Gọi default method: "Diện tích: 78.54"
+    println!("{}", vuong.mo_ta());                // "Diện tích: 16.00"
 }
 ```
 
@@ -80,7 +84,7 @@ fn main() {
 
 ### 🐍 Python:
 ```python
-@dataclass   # Tự tạo __init__, __repr__, __eq__
+@dataclass                           # Tự tạo __init__, __repr__, __eq__
 class Point:
     x: float
     y: float
@@ -88,17 +92,21 @@ class Point:
 
 ### 🦀 Rust:
 ```rust
-#[derive(Debug, Clone, PartialEq)]  // Tự implement Debug, Clone, ==
-struct Point {
-    x: f64,
-    y: f64,
+#[derive(Debug, Clone, PartialEq)]           // Tự implement Debug, Clone, == cho struct
+                                              // Giống @dataclass Python (tự tạo __repr__, copy, __eq__)
+struct Point {                                // Khai báo struct
+    x: f64,                                   // Field x
+    y: f64,                                   // Field y
 }
 
-fn main() {
-    let p1 = Point { x: 1.0, y: 2.0 };
-    let p2 = p1.clone();               // clone() nhờ derive(Clone)
-    println!("{:?}", p1);               // Debug print nhờ derive(Debug)
-    println!("p1 == p2: {}", p1 == p2); // So sánh nhờ derive(PartialEq)
+fn main() {                                   // Hàm chính
+    let p1 = Point { x: 1.0, y: 2.0 };      // Tạo Point
+    let p2 = p1.clone();                      // clone() hoạt động nhờ derive(Clone)
+                                              // Giống copy.deepcopy(p1) Python
+    println!("{:?}", p1);                     // {:?} = debug print nhờ derive(Debug)
+                                              // In: Point { x: 1.0, y: 2.0 } (giống __repr__)
+    println!("p1 == p2: {}", p1 == p2);      // == hoạt động nhờ derive(PartialEq)
+                                              // Giống __eq__ Python
 }
 ```
 
@@ -115,25 +123,27 @@ fn main() {
 
 ### 🐍 Python (chỉ là gợi ý, không bắt buộc):
 ```python
-from typing import Protocol
+from typing import Protocol              # Import Protocol
 
-class Printable(Protocol):
-    def to_string(self) -> str: ...
+class Printable(Protocol):               # Khai báo Protocol (structural typing)
+    def to_string(self) -> str: ...      # Method signature
 
-def in_ra(obj: Printable):  # Python KHÔNG kiểm tra thật!
-    print(obj.to_string())
+def in_ra(obj: Printable):               # Type hint nhưng Python KHÔNG kiểm tra thật!
+    print(obj.to_string())               # Runtime mới biết obj có to_string() không
 ```
 
 ### 🦀 Rust (compiler KIỂM TRA thật):
 ```rust
-fn in_dien_tich(hinh: &impl HinhHoc) {
-    // Chỉ chấp nhận kiểu implement HinhHoc
-    println!("S = {:.2}", hinh.dien_tich());
+// Cách 1: impl Trait (đơn giản)
+fn in_dien_tich(hinh: &impl HinhHoc) {           // &impl HinhHoc = nhận bất kỳ kiểu nào implement HinhHoc
+                                                  // Compiler KIỂM TRA lúc compile (không phải runtime!)
+    println!("S = {:.2}", hinh.dien_tich());     // Chắc chắn có dien_tich() vì trait yêu cầu
 }
 
-// Hoặc dùng generic syntax
-fn in_info<T: HinhHoc>(hinh: &T) {
-    println!("{}", hinh.mo_ta());
+// Cách 2: Generic syntax (tương đương nhưng linh hoạt hơn)
+fn in_info<T: HinhHoc>(hinh: &T) {              // <T: HinhHoc> = T phải implement HinhHoc
+                                                  // Giống TypeVar('T', bound=HinhHoc) Python
+    println!("{}", hinh.mo_ta());                // Gọi method từ trait
 }
 ```
 
@@ -147,24 +157,28 @@ fn in_info<T: HinhHoc>(hinh: &T) {
 
 ```rust
 // ❌ Code này KHÔNG compile
-fn longest(x: &str, y: &str) -> &str {
-    if x.len() > y.len() { x } else { y }
-}
-// Rust hỏi: "reference trả về sống bao lâu?"
+fn longest(x: &str, y: &str) -> &str {          // Trả về reference, nhưng reference của ai?
+    if x.len() > y.len() { x } else { y }       // Có thể trả x hoặc y
+}                                                 // Rust hỏi: "reference trả về sống bao lâu?"
+                                                  // Python không có vấn đề này vì GC quản lý bộ nhớ
 ```
 
 ### ✅ Giải pháp: Thêm lifetime annotation `'a`
 
 ```rust
 fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
-    if x.len() > y.len() { x } else { y }
+                                                  // 'a = lifetime parameter (đánh dấu "thời gian sống")
+                                                  // Nói compiler: "kết quả sống ít nhất bằng x và y"
+                                                  // Python không cần vì GC tự quản lý
+    if x.len() > y.len() { x } else { y }       // Trả về chuỗi dài hơn
 }
 
-fn main() {
-    let s1 = String::from("dài hơn");
-    let s2 = String::from("ngắn");
-    let result = longest(&s1, &s2);
-    println!("Dài hơn: {}", result);
+fn main() {                                       // Hàm chính
+    let s1 = String::from("dài hơn");            // String sống trong toàn bộ main
+    let s2 = String::from("ngắn");               // String sống trong toàn bộ main
+    let result = longest(&s1, &s2);              // Gọi hàm, result là reference
+                                                  // Compiler biết result sống trong phạm vi s1, s2
+    println!("Dài hơn: {}", result);             // OK vì s1, s2 vẫn sống
 }
 ```
 
@@ -176,7 +190,7 @@ fn main() {
 
 1. **90% trường hợp** Rust tự suy luận lifetime - bạn không cần ghi!
 2. Chỉ cần ghi khi **hàm trả về reference** từ nhiều tham số
-3. Nếu gặp lỗi lifetime → thử dùng `String` thay vì `&str` (đơn giản hơn)
+3. Nếu gặp lỗi lifetime thì thử dùng `String` thay vì `&str` (đơn giản hơn)
 
 ---
 
