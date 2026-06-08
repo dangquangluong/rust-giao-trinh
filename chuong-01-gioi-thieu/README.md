@@ -1,39 +1,46 @@
 # Chương 1: Giới Thiệu Rust & Cài Đặt
 
-## 1.1 Rust Là Gì?
+## 1.1 Rust Là Gì? (Giải thích cho người biết Python)
 
-**Rust** là ngôn ngữ lập trình hệ thống (systems programming language) được Mozilla phát triển từ năm 2010 và phát hành phiên bản ổn định đầu tiên (1.0) vào năm 2015.
+Bạn biết Python rồi đúng không? Python dễ viết, dễ đọc, nhưng:
+- Chạy **chậm** (vì interpreted)
+- Tốn **nhiều RAM** (vì garbage collector)
+- Lỗi chỉ phát hiện **lúc chạy** (runtime error)
 
-### Đặc Điểm Nổi Bật
+**Rust** giải quyết tất cả những vấn đề đó:
+- Chạy **nhanh như C/C++** (compiled trực tiếp ra mã máy)
+- Tốn **ít RAM** (không có garbage collector)
+- Lỗi phát hiện **trước khi chạy** (compile-time error)
 
-| Đặc điểm | Mô tả |
-|-----------|--------|
-| **An toàn bộ nhớ** | Không có null pointer, không data race |
-| **Hiệu năng cao** | Ngang C/C++, không có garbage collector |
-| **Zero-cost abstractions** | Abstraction không tốn thêm chi phí runtime |
-| **Hệ thống kiểu mạnh** | Phát hiện lỗi tại compile time |
-| **Concurrency an toàn** | Ngăn chặn data race tại compile time |
+### Tại sao Rust làm vậy?
 
-### Tại Sao Nên Học Rust?
+> 🤔 Bạn có thể hỏi: "Nếu Rust tốt vậy sao mọi người không dùng Rust thay Python?"
+>
+> Câu trả lời: Vì Rust **khó viết hơn**. Bạn phải "nói" cho compiler biết nhiều thứ hơn (kiểu dữ liệu, ai sở hữu dữ liệu...). Đổi lại, chương trình chạy nhanh hơn 10-100 lần và gần như không có bug về bộ nhớ.
 
-1. **An toàn**: Hệ thống ownership giúp tránh bug về bộ nhớ
-2. **Nhanh**: Hiệu năng tương đương C/C++
-3. **Cộng đồng thân thiện**: Được bình chọn là ngôn ngữ "yêu thích nhất" nhiều năm liên tiếp trên Stack Overflow
-4. **Đa dụng**: Web (WebAssembly), hệ thống, game, embedded, CLI tools...
-5. **Tương lai**: Được sử dụng bởi Microsoft, Google, Amazon, Meta, Linux kernel...
+### Khi nào dùng Python, khi nào dùng Rust?
+
+| Dùng Python khi... | Dùng Rust khi... |
+|---------------------|-------------------|
+| Viết script nhanh | Cần hiệu năng cao |
+| Data science, ML | Viết CLI tool, system tool |
+| Prototype, thử nghiệm | Game engine, web server nhanh |
+| Không quan tâm tốc độ | WebAssembly |
+| Automation | Embedded, IoT |
+
+### Ai đang dùng Rust?
+
+Microsoft, Google, Amazon, Meta, Discord, Cloudflare, Linux kernel... Rust được bình chọn là ngôn ngữ "yêu thích nhất" nhiều năm liên tiếp trên Stack Overflow.
 
 ## 1.2 Cài Đặt Rust
 
 ### Trên Linux / macOS
 
-Mở terminal và chạy:
-
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Sau khi cài xong, thêm Rust vào PATH:
-
+Sau khi cài xong:
 ```bash
 source $HOME/.cargo/env
 ```
@@ -41,114 +48,123 @@ source $HOME/.cargo/env
 ### Trên Windows
 
 1. Tải **rustup-init.exe** từ [https://rustup.rs](https://rustup.rs)
-2. Chạy file và làm theo hướng dẫn
-3. Cài đặt [Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) nếu được yêu cầu
+2. Chạy file, làm theo hướng dẫn
+3. Cài [Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) nếu cần
 
-### Kiểm Tra Cài Đặt
+### Kiểm Tra
 
 ```bash
 rustc --version
-# Kết quả mẫu: rustc 1.XX.0 (abc1234 2024-XX-XX)
-
 cargo --version
-# Kết quả mẫu: cargo 1.XX.0 (abc1234 2024-XX-XX)
 ```
 
-### Cập Nhật Rust
+> 💡 `rustc` giống `python` (chạy code), `cargo` giống `pip` + `poetry` (quản lý project & dependencies)
 
-```bash
-rustup update
+## 1.3 So Sánh Công Cụ: Python vs Rust
+
+| Python | Rust | Công dụng |
+|--------|------|-----------|
+| `python file.py` | `cargo run` | Chạy chương trình |
+| `pip install` | `cargo add` | Thêm thư viện |
+| `pip freeze` / `requirements.txt` | `Cargo.toml` | Quản lý dependencies |
+| `pytest` | `cargo test` | Chạy tests |
+| `black` / `autopep8` | `cargo fmt` | Format code |
+| `pylint` / `flake8` | `cargo clippy` | Kiểm tra code style |
+| `python -m venv` | (không cần) | Rust tự tách project |
+
+## 1.4 Chương Trình Đầu Tiên
+
+### Trong Python:
+```python
+print("Xin chao, Python!")
 ```
+Chạy: `python hello.py` - xong!
 
-## 1.3 Công Cụ Phát Triển
-
-### Cargo - Package Manager & Build Tool
-
-Cargo là công cụ đa năng đi kèm Rust:
-
-- **Quản lý dependencies** (thư viện bên ngoài)
-- **Build** (biên dịch code)
-- **Test** (chạy test)
-- **Publish** (đăng thư viện lên crates.io)
-
-### IDE / Editor Khuyến Nghị
-
-| Editor | Plugin |
-|--------|--------|
-| **VS Code** | rust-analyzer (khuyến nghị nhất) |
-| **IntelliJ IDEA** | Rust plugin |
-| **Neovim** | rust-analyzer + LSP |
-| **Sublime Text** | Rust Enhanced |
-
-## 1.4 Chương Trình Đầu Tiên: Hello World
-
-### Cách 1: Dùng `rustc` trực tiếp
-
-Tạo file `hello.rs`:
-
+### Trong Rust:
 ```rust
 fn main() {
-    println!("Xin chào, Rust! 🦀");
+    println!("Xin chao, Rust! 🦀");
 }
 ```
+Chạy: `rustc hello.rs && ./hello`
 
-Biên dịch và chạy:
+### Khác biệt gì?
+
+| Python | Rust | Tại sao? |
+|--------|------|----------|
+| Không cần `main()` | Bắt buộc `fn main()` | Rust cần biết bắt đầu từ đâu |
+| `print()` | `println!()` | Dấu `!` nghĩa là macro (không phải hàm) |
+| Không có `;` | Kết thúc bằng `;` | Rust dùng `;` phân tách câu lệnh |
+| Indentation quan trọng | Dùng `{}` | Rust dùng ngoặc nhọn cho block |
+
+### Cách dùng Cargo (khuyến nghị)
 
 ```bash
-rustc hello.rs
-./hello
-```
-
-### Cách 2: Dùng Cargo (Khuyến nghị)
-
-```bash
-# Tạo project mới
+# Tạo project mới (giống django-admin startproject)
 cargo new hello_rust
 cd hello_rust
 
-# Cấu trúc thư mục được tạo:
+# Cấu trúc:
 # hello_rust/
-# ├── Cargo.toml    (file cấu hình project)
+# ├── Cargo.toml    (giống requirements.txt + setup.py)
 # └── src/
-#     └── main.rs   (file code chính)
+#     └── main.rs   (code chính)
 
-# Build và chạy
+# Build + chạy
 cargo run
 ```
 
-### Giải Thích Code
+## 1.5 Giải Thích Chi Tiết
 
 ```rust
-fn main() {           // Hàm main - điểm bắt đầu của chương trình
-    println!("Xin chào, Rust! 🦀");  // In ra màn hình
-}                     // Kết thúc hàm
+fn main() {           // fn = function, main = hàm chạy đầu tiên
+    println!("Xin chao, Rust! 🦀");  // println! = in ra + xuống dòng
+}
 ```
 
-- `fn` - từ khóa khai báo hàm (function)
-- `main()` - hàm đặc biệt, luôn chạy đầu tiên
-- `println!` - macro in ra màn hình (có dấu `!` nghĩa là macro, không phải function)
-- Mỗi câu lệnh kết thúc bằng `;`
+So sánh với Python:
+```python
+# Python - không cần def main (nhưng nên có)
+if __name__ == "__main__":
+    print("Xin chao, Python!")
+```
 
-## 1.5 Các Lệnh Cargo Thường Dùng
+### Format string
 
-| Lệnh | Công dụng |
-|------|-----------|
-| `cargo new <tên>` | Tạo project mới |
-| `cargo build` | Biên dịch (debug mode) |
-| `cargo build --release` | Biên dịch (release mode, tối ưu) |
-| `cargo run` | Build + Chạy |
-| `cargo check` | Kiểm tra lỗi (nhanh hơn build) |
-| `cargo test` | Chạy tests |
-| `cargo doc --open` | Tạo và mở documentation |
-| `cargo fmt` | Format code |
-| `cargo clippy` | Kiểm tra code style & gợi ý |
+**Python (f-string):**
+```python
+ten = "Ban"
+print(f"Xin chao, {ten}!")
+```
 
-## 1.6 Bài Tập
+**Rust:**
+```rust
+let ten = "Ban";
+println!("Xin chao, {}!", ten);
+```
 
-1. Cài đặt Rust trên máy tính của bạn
+> 💡 Rust dùng `{}` thay vì `{ten}`. Từ Rust 1.58+, bạn cũng có thể viết `println!("Xin chao, {ten}!");`
+
+## 1.6 Các Lệnh Cargo Hay Dùng
+
+| Lệnh | Giống Python | Công dụng |
+|------|-------------|-----------|
+| `cargo new <ten>` | `mkdir` + setup | Tạo project mới |
+| `cargo run` | `python main.py` | Build + Chạy |
+| `cargo build` | - | Chỉ build (không chạy) |
+| `cargo build --release` | - | Build tối ưu (nhanh hơn) |
+| `cargo check` | - | Kiểm tra lỗi nhanh |
+| `cargo test` | `pytest` | Chạy tests |
+| `cargo fmt` | `black .` | Format code |
+| `cargo clippy` | `flake8` | Gợi ý code tốt hơn |
+
+## 1.7 Bài Tập
+
+1. Cài đặt Rust trên máy
 2. Tạo project `bai-tap-01` bằng Cargo
 3. Sửa `main.rs` để in ra tên của bạn
-4. Thử các lệnh: `cargo check`, `cargo build`, `cargo run`
+4. Thử: `cargo check`, `cargo build`, `cargo run`
+5. Thử sửa code sai (bỏ dấu `;`) rồi xem compiler báo lỗi gì
 
 ---
 
