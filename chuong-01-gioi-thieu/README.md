@@ -1,170 +1,201 @@
 # Chương 1: Giới Thiệu Rust & Cài Đặt
 
-## 1.1 Rust Là Gì? (Giải thích cho người biết Python)
+> 🐍 Bạn đã biết Python? Tuyệt! Mình sẽ giải thích Rust bằng cách so sánh với Python.
 
-Bạn biết Python rồi đúng không? Python dễ viết, dễ đọc, nhưng:
-- Chạy **chậm** (vì interpreted)
-- Tốn **nhiều RAM** (vì garbage collector)
-- Lỗi chỉ phát hiện **lúc chạy** (runtime error)
+## 1.1 Rust Là Gì? Tại Sao Học?
 
-**Rust** giải quyết tất cả những vấn đề đó:
-- Chạy **nhanh như C/C++** (compiled trực tiếp ra mã máy)
-- Tốn **ít RAM** (không có garbage collector)
-- Lỗi phát hiện **trước khi chạy** (compile-time error)
+Bạn đã biết Python - ngôn ngữ dễ viết, dễ đọc. Vậy tại sao cần Rust?
 
-### Tại sao Rust làm vậy?
+| | Python 🐍 | Rust 🦀 |
+|-|-----------|---------|
+| **Viết code** | Nhanh, ngắn gọn | Dài hơn, nhưng an toàn hơn |
+| **Chạy** | Chậm (100x chậm hơn C) | Cực nhanh (ngang C/C++) |
+| **Lỗi** | Phát hiện lúc chạy (crash!) | Phát hiện lúc compile (trước khi chạy!) |
+| **Bộ nhớ** | GC tự dọn (đôi khi chậm) | Không GC, tự quản lý (nhanh hơn) |
+| **Dùng cho** | Web, AI, scripting, automation | Game, OS, trình duyệt, blockchain |
 
-> 🤔 Bạn có thể hỏi: "Nếu Rust tốt vậy sao mọi người không dùng Rust thay Python?"
->
-> Câu trả lời: Vì Rust **khó viết hơn**. Bạn phải "nói" cho compiler biết nhiều thứ hơn (kiểu dữ liệu, ai sở hữu dữ liệu...). Đổi lại, chương trình chạy nhanh hơn 10-100 lần và gần như không có bug về bộ nhớ.
+> 💡 **Tóm lại:** Python = viết nhanh nhưng chạy chậm. Rust = viết chậm hơn nhưng chạy siêu nhanh + an toàn.
 
-### Khi nào dùng Python, khi nào dùng Rust?
-
-| Dùng Python khi... | Dùng Rust khi... |
-|---------------------|-------------------|
-| Viết script nhanh | Cần hiệu năng cao |
-| Data science, ML | Viết CLI tool, system tool |
-| Prototype, thử nghiệm | Game engine, web server nhanh |
-| Không quan tâm tốc độ | WebAssembly |
-| Automation | Embedded, IoT |
-
-### Ai đang dùng Rust?
-
-Microsoft, Google, Amazon, Meta, Discord, Cloudflare, Linux kernel... Rust được bình chọn là ngôn ngữ "yêu thích nhất" nhiều năm liên tiếp trên Stack Overflow.
+---
 
 ## 1.2 Cài Đặt Rust
 
-### Trên Linux / macOS
+### Windows
+1. Vào [https://rustup.rs](https://rustup.rs)
+2. Tải và chạy **rustup-init.exe**
+3. Chọn mặc định (nhấn Enter)
 
+### macOS / Linux
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Sau khi cài xong:
+### Kiểm tra (giống `python --version`):
 ```bash
-source $HOME/.cargo/env
+rustc --version    # Compiler Rust
+cargo --version    # Package manager (giống pip)
 ```
 
-### Trên Windows
+---
 
-1. Tải **rustup-init.exe** từ [https://rustup.rs](https://rustup.rs)
-2. Chạy file, làm theo hướng dẫn
-3. Cài [Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) nếu cần
+## 1.3 Cargo = pip + venv + build tool
 
-### Kiểm Tra
+| Bạn dùng trong Python | Tương đương trong Rust |
+|-----------------------|----------------------|
+| `pip install requests` | `cargo add requests` (thêm vào Cargo.toml) |
+| `python file.py` | `cargo run` |
+| `pip freeze > requirements.txt` | `Cargo.toml` (tự động) |
+| `python -m venv env` | Không cần! Cargo quản lý tự động |
+| `pytest` | `cargo test` |
 
+### Tạo project mới:
 ```bash
-rustc --version
-cargo --version
+# Python: tạo file .py là xong
+# Rust: cần tạo project
+
+cargo new hello_rust     # Giống "mkdir + setup"
+cd hello_rust
+cargo run                # Build + chạy
 ```
 
-> 💡 `rustc` giống `python` (chạy code), `cargo` giống `pip` + `poetry` (quản lý project & dependencies)
+Cấu trúc được tạo:
+```
+hello_rust/
+├── Cargo.toml    ← giống requirements.txt + setup.py
+└── src/
+    └── main.rs   ← file code chính (giống main.py)
+```
 
-## 1.3 So Sánh Công Cụ: Python vs Rust
+---
 
-| Python | Rust | Công dụng |
-|--------|------|-----------|
-| `python file.py` | `cargo run` | Chạy chương trình |
-| `pip install` | `cargo add` | Thêm thư viện |
-| `pip freeze` / `requirements.txt` | `Cargo.toml` | Quản lý dependencies |
-| `pytest` | `cargo test` | Chạy tests |
-| `black` / `autopep8` | `cargo fmt` | Format code |
-| `pylint` / `flake8` | `cargo clippy` | Kiểm tra code style |
-| `python -m venv` | (không cần) | Rust tự tách project |
+## 1.4 Chương Trình Đầu Tiên - Giải Thích TỪNG CHỮ
 
-## 1.4 Chương Trình Đầu Tiên
-
-### Trong Python:
+### 🐍 Python:
 ```python
-print("Xin chao, Python!")
+print("Xin chào, Python!")
 ```
-Chạy: `python hello.py` - xong!
 
-### Trong Rust:
+### 🦀 Rust:
 ```rust
 fn main() {
-    println!("Xin chao, Rust! 🦀");
-}
-```
-Chạy: `rustc hello.rs && ./hello`
-
-### Khác biệt gì?
-
-| Python | Rust | Tại sao? |
-|--------|------|----------|
-| Không cần `main()` | Bắt buộc `fn main()` | Rust cần biết bắt đầu từ đâu |
-| `print()` | `println!()` | Dấu `!` nghĩa là macro (không phải hàm) |
-| Không có `;` | Kết thúc bằng `;` | Rust dùng `;` phân tách câu lệnh |
-| Indentation quan trọng | Dùng `{}` | Rust dùng ngoặc nhọn cho block |
-
-### Cách dùng Cargo (khuyến nghị)
-
-```bash
-# Tạo project mới (giống django-admin startproject)
-cargo new hello_rust
-cd hello_rust
-
-# Cấu trúc:
-# hello_rust/
-# ├── Cargo.toml    (giống requirements.txt + setup.py)
-# └── src/
-#     └── main.rs   (code chính)
-
-# Build + chạy
-cargo run
-```
-
-## 1.5 Giải Thích Chi Tiết
-
-```rust
-fn main() {           // fn = function, main = hàm chạy đầu tiên
-    println!("Xin chao, Rust! 🦀");  // println! = in ra + xuống dòng
+    println!("Xin chào, Rust! 🦀");
 }
 ```
 
-So sánh với Python:
+### 🔍 Giải thích từng phần:
+
+| Code | Nghĩa là gì | So với Python |
+|------|-------------|---------------|
+| `fn` | **f**unctio**n** = khai báo hàm | `def` trong Python |
+| `main()` | Hàm chính, chạy đầu tiên | Python cũng có `if __name__ == "__main__"` |
+| `{` và `}` | Bắt đầu/kết thúc block code | Python dùng `:` + thụt dòng |
+| `println!` | In ra màn hình | `print()` trong Python |
+| `!` sau println | Đây là **macro** (không phải hàm thường) | Không có trong Python |
+| `"..."` | Chuỗi (string) | Giống Python |
+| `;` | Kết thúc câu lệnh | Python KHÔNG cần `;` |
+
+### 📌 Tại sao Rust cần nhiều thứ hơn Python?
+
+> Python: `print("hello")` → 1 dòng, xong!
+>
+> Rust: phải có `fn main() { }` → vì Rust **LUÔN** cần 1 hàm `main` làm điểm bắt đầu. Rust không chạy code "rời" ngoài hàm.
+
+---
+
+## 1.5 Giải Thích Các Từ Khóa Bạn Sẽ Gặp Liên Tục
+
+| Từ khóa Rust | Đọc là | Nghĩa | Tương đương Python |
+|-------------|--------|-------|-------------------|
+| `fn` | "function" | Khai báo hàm | `def` |
+| `let` | "let" | Khai báo biến | `x = 5` (Python tự hiểu) |
+| `let mut` | "let mutable" | Biến có thể thay đổi | Mặc định Python đã thay đổi được |
+| `println!` | "print line" | In + xuống dòng | `print()` |
+| `//` | "comment" | Ghi chú | `#` trong Python |
+| `->` | "returns" | Kiểu trả về của hàm | `-> int` (type hint Python) |
+| `&` | "reference" | Cho mượn (borrowing) | Không có trong Python |
+| `::` | "path" | Truy cập method/module | `.` trong Python |
+| `{}` | "placeholder" | Chỗ điền giá trị trong string | `{}` trong f-string |
+
+---
+
+## 1.6 Ví Dụ So Sánh Chi Tiết
+
+### 🐍 Python:
 ```python
-# Python - không cần def main (nhưng nên có)
-if __name__ == "__main__":
-    print("Xin chao, Python!")
+# Khai báo biến
+ten = "An"
+tuoi = 25
+
+# In ra
+print(f"Tôi là {ten}, {tuoi} tuổi")
+
+# Hàm
+def cong(a, b):
+    return a + b
+
+print(cong(3, 5))
 ```
 
-### Format string
-
-**Python (f-string):**
-```python
-ten = "Ban"
-print(f"Xin chao, {ten}!")
-```
-
-**Rust:**
+### 🦀 Rust (giải thích từng dòng):
 ```rust
-let ten = "Ban";
-println!("Xin chao, {}!", ten);
+fn main() {                              // fn = def, main = hàm chính
+    // Khai báo biến (let = "tôi khai báo biến mới")
+    let ten = "An";                      // let ten = ... (giống ten = "An")
+    let tuoi = 25;                       // let tuoi = 25
+
+    // In ra (println! = print, {} = chỗ điền giá trị)
+    println!("Tôi là {}, {} tuổi", ten, tuoi);
+
+    // Gọi hàm
+    println!("{}", cong(3, 5));
+}
+
+// fn = def, (a: i32, b: i32) = tham số + kiểu, -> i32 = kiểu trả về
+fn cong(a: i32, b: i32) -> i32 {
+    a + b    // Dòng cuối không có ; = return (tự trả về)
+}
 ```
 
-> 💡 Rust dùng `{}` thay vì `{ten}`. Từ Rust 1.58+, bạn cũng có thể viết `println!("Xin chao, {ten}!");`
+---
 
-## 1.6 Các Lệnh Cargo Hay Dùng
+## 1.7 Tóm Tắt: "Phiên Dịch" Python → Rust
 
-| Lệnh | Giống Python | Công dụng |
-|------|-------------|-----------|
-| `cargo new <ten>` | `mkdir` + setup | Tạo project mới |
-| `cargo run` | `python main.py` | Build + Chạy |
-| `cargo build` | - | Chỉ build (không chạy) |
-| `cargo build --release` | - | Build tối ưu (nhanh hơn) |
-| `cargo check` | - | Kiểm tra lỗi nhanh |
-| `cargo test` | `pytest` | Chạy tests |
-| `cargo fmt` | `black .` | Format code |
-| `cargo clippy` | `flake8` | Gợi ý code tốt hơn |
+| Bạn viết trong Python | Viết trong Rust | Ghi nhớ |
+|-----------------------|----------------|---------|
+| `x = 5` | `let x = 5;` | Thêm `let` đầu, `;` cuối |
+| `x = 5` (muốn đổi sau) | `let mut x = 5;` | Thêm `mut` nếu muốn thay đổi |
+| `def foo():` | `fn foo() {` | `def` → `fn`, `:` → `{` |
+| `def foo(a, b):` | `fn foo(a: i32, b: i32) {` | Phải ghi kiểu tham số |
+| `return x` | `x` (không `;`) hoặc `return x;` | Dòng cuối bỏ `;` = return |
+| `print(f"x={x}")` | `println!("x={}", x);` | `!` và `{}` |
+| `# comment` | `// comment` | `#` → `//` |
+| `:` + thụt dòng | `{ }` | Block dùng ngoặc nhọn |
+| Không cần `;` | **CẦN** `;` cuối mỗi lệnh | Hay quên → compiler nhắc! |
 
-## 1.7 Bài Tập
+---
 
-1. Cài đặt Rust trên máy
-2. Tạo project `bai-tap-01` bằng Cargo
-3. Sửa `main.rs` để in ra tên của bạn
-4. Thử: `cargo check`, `cargo build`, `cargo run`
-5. Thử sửa code sai (bỏ dấu `;`) rồi xem compiler báo lỗi gì
+## 1.8 Các Lệnh Cargo Hay Dùng
+
+| Lệnh | Làm gì | Giống Python |
+|------|--------|-------------|
+| `cargo new ten_project` | Tạo project mới | `mkdir + touch` |
+| `cargo run` | Compile + chạy | `python main.py` |
+| `cargo build` | Chỉ compile (không chạy) | - |
+| `cargo check` | Kiểm tra lỗi nhanh | `python -m py_compile` |
+| `cargo test` | Chạy tests | `pytest` |
+| `cargo add ten_thu_vien` | Thêm thư viện | `pip install` |
+
+---
+
+## 1.9 Bài Tập
+
+1. Cài Rust, chạy `rustc --version` và `cargo --version`
+2. Tạo project mới: `cargo new bai_tap_01`
+3. Sửa `src/main.rs` để in ra: "Tôi là [tên bạn], đang học Rust!"
+4. Chạy: `cargo run`
+5. Thử **CỐ TÌNH** viết sai (bỏ `;`, sai tên biến) → đọc lỗi compiler trả về
+
+> 💡 **Mẹo:** Đọc lỗi compiler! Rust có message lỗi RẤT RÕ RÀNG, thậm chí gợi ý cách sửa. Đừng sợ lỗi!
 
 ---
 
