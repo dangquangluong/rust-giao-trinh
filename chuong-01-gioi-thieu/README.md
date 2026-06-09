@@ -32,8 +32,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 ### Kiểm tra (giống `python --version`):
 ```bash
-rustc --version    # Compiler Rust
-cargo --version    # Package manager (giống pip)
+rustc --version    # Compiler Rust (chương trình biên dịch code Rust)
+cargo --version    # Package manager (giống pip trong Python)
 ```
 
 ---
@@ -51,17 +51,17 @@ cargo --version    # Package manager (giống pip)
 ### Tạo project mới:
 ```bash
 # Python: tạo file .py là xong
-# Rust: cần tạo project
+# Rust: cần tạo project (vì Rust cần compile)
 
-cargo new hello_rust     # Giống "mkdir + setup"
-cd hello_rust
-cargo run                # Build + chạy
+cargo new hello_rust     # Tạo project mới (giống mkdir + tạo cấu trúc)
+cd hello_rust            # Vào thư mục project
+cargo run                # Build (compile) + chạy chương trình
 ```
 
 Cấu trúc được tạo:
 ```
 hello_rust/
-├── Cargo.toml    ← giống requirements.txt + setup.py
+├── Cargo.toml    ← giống requirements.txt + setup.py (khai báo dependencies)
 └── src/
     └── main.rs   ← file code chính (giống main.py)
 ```
@@ -72,14 +72,16 @@ hello_rust/
 
 ### 🐍 Python:
 ```python
-print("Xin chào, Python!")
+print("Xin chào, Python!")              # In ra màn hình - chỉ cần 1 dòng, không cần hàm main
 ```
 
 ### 🦀 Rust:
 ```rust
-fn main() {
-    println!("Xin chào, Rust! 🦀");
-}
+fn main() {                              // fn = def (khai báo hàm), main = hàm chính chạy đầu tiên
+                                         // { = bắt đầu body hàm (Python dùng : + thụt dòng)
+    println!("Xin chào, Rust! 🦀");     // println! = print() Python, ! = đây là macro (không phải hàm thường)
+                                         // "..." = chuỗi string, ; = kết thúc câu lệnh (Python không cần)
+}                                        // } = kết thúc hàm (Python dùng hết thụt dòng = hết hàm)
 ```
 
 ### 🔍 Giải thích từng phần:
@@ -96,9 +98,9 @@ fn main() {
 
 ### 📌 Tại sao Rust cần nhiều thứ hơn Python?
 
-> Python: `print("hello")` → 1 dòng, xong!
+> Python: `print("hello")` thì 1 dòng, xong!
 >
-> Rust: phải có `fn main() { }` → vì Rust **LUÔN** cần 1 hàm `main` làm điểm bắt đầu. Rust không chạy code "rời" ngoài hàm.
+> Rust: phải có `fn main() { }` vì Rust **LUÔN** cần 1 hàm `main` làm điểm bắt đầu. Rust không chạy code "rời" ngoài hàm.
 
 ---
 
@@ -123,54 +125,58 @@ fn main() {
 ### 🐍 Python:
 ```python
 # Khai báo biến
-ten = "An"
-tuoi = 25
+ten = "An"                               # Tạo biến ten, Python tự hiểu kiểu str
+tuoi = 25                                # Tạo biến tuoi, Python tự hiểu kiểu int
 
 # In ra
-print(f"Tôi là {ten}, {tuoi} tuổi")
+print(f"Tôi là {ten}, {tuoi} tuổi")     # f-string: {} = chỗ điền giá trị biến
 
 # Hàm
-def cong(a, b):
-    return a + b
+def cong(a, b):                          # def = khai báo hàm, không cần ghi kiểu
+    return a + b                         # return trả về kết quả
 
-print(cong(3, 5))
+print(cong(3, 5))                        # Gọi hàm và in kết quả
 ```
 
 ### 🦀 Rust (giải thích từng dòng):
 ```rust
-fn main() {                              // fn = def, main = hàm chính
+fn main() {                              // fn = def, main = hàm chính chạy đầu tiên
     // Khai báo biến (let = "tôi khai báo biến mới")
-    let ten = "An";                      // let ten = ... (giống ten = "An")
-    let tuoi = 25;                       // let tuoi = 25
+    let ten = "An";                      // let ten = ... (giống ten = "An" Python)
+                                         // ; = kết thúc câu lệnh (Python không cần)
+    let tuoi = 25;                       // let tuoi = 25 (Rust tự hiểu kiểu i32)
 
     // In ra (println! = print, {} = chỗ điền giá trị)
     println!("Tôi là {}, {} tuổi", ten, tuoi);
+                                         // {} thứ 1 = ten, {} thứ 2 = tuoi
+                                         // Giống f"Tôi là {ten}, {tuoi} tuổi" Python
 
     // Gọi hàm
-    println!("{}", cong(3, 5));
-}
+    println!("{}", cong(3, 5));          // {} = chỗ in kết quả cong(3,5), giống print(cong(3,5))
+}                                        // } kết thúc main
 
-// fn = def, (a: i32, b: i32) = tham số + kiểu, -> i32 = kiểu trả về
-fn cong(a: i32, b: i32) -> i32 {
-    a + b    // Dòng cuối không có ; = return (tự trả về)
+// fn = def, (a: i32, b: i32) = tham số + kiểu BẮT BUỘC, -> i32 = kiểu trả về
+fn cong(a: i32, b: i32) -> i32 {        // Khai báo hàm cong, nhận 2 số i32, trả về i32
+    a + b                                // Dòng cuối không có ; = tự động return giá trị
+                                         // Giống "return a + b" nhưng gọn hơn
 }
 ```
 
 ---
 
-## 1.7 Tóm Tắt: "Phiên Dịch" Python → Rust
+## 1.7 Tóm Tắt: "Phiên Dịch" Python sang Rust
 
 | Bạn viết trong Python | Viết trong Rust | Ghi nhớ |
 |-----------------------|----------------|---------|
 | `x = 5` | `let x = 5;` | Thêm `let` đầu, `;` cuối |
 | `x = 5` (muốn đổi sau) | `let mut x = 5;` | Thêm `mut` nếu muốn thay đổi |
-| `def foo():` | `fn foo() {` | `def` → `fn`, `:` → `{` |
+| `def foo():` | `fn foo() {` | `def` thành `fn`, `:` thành `{` |
 | `def foo(a, b):` | `fn foo(a: i32, b: i32) {` | Phải ghi kiểu tham số |
 | `return x` | `x` (không `;`) hoặc `return x;` | Dòng cuối bỏ `;` = return |
 | `print(f"x={x}")` | `println!("x={}", x);` | `!` và `{}` |
-| `# comment` | `// comment` | `#` → `//` |
+| `# comment` | `// comment` | `#` thành `//` |
 | `:` + thụt dòng | `{ }` | Block dùng ngoặc nhọn |
-| Không cần `;` | **CẦN** `;` cuối mỗi lệnh | Hay quên → compiler nhắc! |
+| Không cần `;` | **CẦN** `;` cuối mỗi lệnh | Hay quên thì compiler nhắc! |
 
 ---
 
@@ -193,7 +199,7 @@ fn cong(a: i32, b: i32) -> i32 {
 2. Tạo project mới: `cargo new bai_tap_01`
 3. Sửa `src/main.rs` để in ra: "Tôi là [tên bạn], đang học Rust!"
 4. Chạy: `cargo run`
-5. Thử **CỐ TÌNH** viết sai (bỏ `;`, sai tên biến) → đọc lỗi compiler trả về
+5. Thử **CỐ TÌNH** viết sai (bỏ `;`, sai tên biến) rồi đọc lỗi compiler trả về
 
 > 💡 **Mẹo:** Đọc lỗi compiler! Rust có message lỗi RẤT RÕ RÀNG, thậm chí gợi ý cách sửa. Đừng sợ lỗi!
 
